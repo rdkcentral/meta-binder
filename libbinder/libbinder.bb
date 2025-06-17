@@ -13,6 +13,7 @@ PV ?= "1.0.0"
 PR ?= "r0"
 SRCREV ?= "1.0.0"
 
+# Do not use libblog.bb if using libbinder.bb because libbinder provides support for liblog.bb
 RPROVIDES:${PN}:append = " liblog"
 PROVIDES:append = " liblog"
 
