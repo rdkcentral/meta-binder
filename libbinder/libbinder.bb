@@ -19,9 +19,6 @@ PROVIDES:append = " liblog"
 
 S = "${WORKDIR}/git"
 
-# Network access from tasks is disabled by default on kernels which support this feature
-do_configure[network] = "1"
-
 inherit cmake systemd
 
 do_configure:prepend() {
