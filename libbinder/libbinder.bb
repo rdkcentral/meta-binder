@@ -25,8 +25,13 @@ do_configure:prepend() {
     cd ${S}
     # Source setup-env.sh to initialise the environment variables.
     . ./setup-env.sh
-    # Clone the AOSP code and apply the patches.
-    clone_android_binder_repo
+    # If android/ is already populated (e.g. copied from local mirror), skip the
+    # network clone to avoid hitting android.googlesource.com.
+    if [ -d "${S}/android/native" ]; then
+        bbnote "android/native already present – skipping network clone"
+    else
+        clone_android_binder_repo
+    fi
     cd ${B}
 }
 
