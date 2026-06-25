@@ -9,9 +9,9 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
 SRC_URI += "file://servicemanager.service"
 
-PV ?= "1.0.0"
+PV ?= "2.3.0"
 PR ?= "r0"
-SRCREV ?= "1.0.0"
+SRCREV ?= "2.3.0"
 
 # Do not use libblog.bb if using libbinder.bb because libbinder provides support for liblog.bb
 RPROVIDES:${PN}:append = " liblog"
@@ -24,12 +24,19 @@ do_configure[network] = "1"
 
 inherit cmake systemd
 
+DEPENDS += "bison-native pkgconfig-native"
+
+# Disable building the host AIDL compiler tool in Yocto cross-compilation.
+# The aidl binary would be cross-compiled to the target arch (e.g. aarch64)
+# and cannot execute on the host to generate stubs, causing "Exec format error".
+# With BUILD_HOST_AIDL=OFF the build uses the prebuilt stubs in binder_aidl_gen/.
+EXTRA_OECMAKE += "-DBUILD_HOST_AIDL=OFF"
+
 do_configure:prepend() {
     cd ${S}
     # Source setup-env.sh to initialise the environment variables.
-    . ./setup-env.sh
     # Clone the AOSP code and apply the patches.
-    clone_android_binder_repo
+    bash ./clone-android-binder-repo.sh
     cd ${B}
 }
 
