@@ -42,7 +42,7 @@ SRC_URI += "file://servicemanager.service"
 # Pin to a released tag. A branch name or a feature-branch SHA makes the build
 # unreproducible and is not a supported configuration.
 PV ?= "2.6.0"
-SRCREV ?= "2.6.0"
+SRCREV ?= "005535514f7e29724e6dc3d8cfbdd39efbafd8a2"
 S = "${WORKDIR}/git"
 
 # libbinder provides liblog; do not also build liblog.bb.
