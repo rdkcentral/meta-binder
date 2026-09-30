@@ -1,0 +1,36 @@
+From: RDK Management
+Subject: Do not request FLAT_BINDER_FLAG_TXN_SECURITY_CTX on AppArmor devices
+
+This device's kernel enforces AppArmor (CONFIG_SECURITY_APPARMOR), not
+SELinux. AppArmor's apparmor_secid_to_secctx() returns -EINVAL for any
+secid that has no registered label (e.g. unconfined processes), and
+binder_transaction() hard-fails every transaction to a node with
+txn_security_ctx set if that lookup fails (drivers/android/binder.c,
+"transaction failed .../-22 ... line 2861").
+
+Registering the context manager without the flag avoids requiring a
+security context this kernel/LSM combination can never provide, so
+every client's addService()/checkService() call to servicemanager was
+failing with EX_TRANSACTION_FAILED (-129).
+
+diff --git a/libs/binder/ProcessState.cpp b/libs/binder/ProcessState.cpp
+index 1111111..2222222 100644
+--- a/libs/binder/ProcessState.cpp
++++ b/libs/binder/ProcessState.cpp
+@@ -192,7 +192,15 @@ bool ProcessState::becomeContextManager()
+     AutoMutex _l(mLock);
+
+     flat_binder_object obj {
+-        .flags = FLAT_BINDER_FLAG_TXN_SECURITY_CTX,
++        // Do not request FLAT_BINDER_FLAG_TXN_SECURITY_CTX: this device's
++        // kernel enforces AppArmor (CONFIG_SECURITY_APPARMOR), not SELinux.
++        // AppArmor's apparmor_secid_to_secctx() returns -EINVAL for any
++        // secid that has no registered label (e.g. unconfined processes),
++        // and binder_transaction() hard-fails every transaction to a node
++        // with txn_security_ctx set if that lookup fails. Registering
++        // without the flag avoids requiring a security context this
++        // kernel/LSM combination can't provide.
++        .flags = 0,
+     };
+
+     int result = ioctl(mDriverFD, BINDER_SET_CONTEXT_MGR_EXT, &obj);
