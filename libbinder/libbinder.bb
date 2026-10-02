@@ -54,7 +54,7 @@ SRC_URI += "file://0001-fix-apparmor-txn-security-ctx.patch;apply=no"
 # Pin to a released tag. A branch name or a feature-branch SHA makes the build
 # unreproducible and is not a supported configuration.
 PV ?= "2.6.0"
-SRCREV ?= "2.6.0"
+SRCREV ?= "2a569dcea136e687790753f1367b70efb20cbca7"
 S = "${WORKDIR}/git"
 
 # libbinder provides liblog; do not also build liblog.bb.
