@@ -90,7 +90,6 @@ inherit cmake systemd siteinfo
 #
 EXTRA_OECMAKE += " \
     -DBUILD_HOST_AIDL=OFF \
-     -DBINDER_IPC_32BIT=OFF \
 "
 do_configure[network] = "1"
 
