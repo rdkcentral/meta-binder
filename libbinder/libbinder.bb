@@ -39,6 +39,18 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
 SRC_URI += "file://servicemanager.service"
 
+# This device's kernel enforces AppArmor, not SELinux; upstream's
+# becomeContextManager() requests FLAT_BINDER_FLAG_TXN_SECURITY_CTX
+# unconditionally, which AppArmor can't satisfy for unconfined callers and
+# which hard-fails every subsequent transaction to servicemanager with
+# EX_TRANSACTION_FAILED (-129). See files/0001-fix-apparmor-txn-security-ctx.patch.
+#
+# apply=no: the "android/native" tree this patch targets does not exist at
+# do_patch time. CMakeLists.txt clones it itself (execute_process running
+# clone-android-binder-repo.sh) during the cmake configure step, so this is
+# applied from do_configure:append below instead, once that clone exists.
+SRC_URI += "file://0001-fix-apparmor-txn-security-ctx.patch;apply=no"
+
 # Pin to a released tag. A branch name or a feature-branch SHA makes the build
 # unreproducible and is not a supported configuration.
 PV ?= "2.6.0"
@@ -78,8 +90,23 @@ inherit cmake systemd siteinfo
 #
 EXTRA_OECMAKE += " \
     -DBUILD_HOST_AIDL=OFF \
-    -DBINDER_PROTOCOL=8 \
+     -DBINDER_IPC_32BIT=OFF \
 "
+do_configure[network] = "1"
+
+do_configure:append() {
+    if [ -f ${S}/android/native/libs/binder/ProcessState.cpp ]; then
+        if ! grep -q "FLAT_BINDER_FLAG_TXN_SECURITY_CTX" ${S}/android/native/libs/binder/ProcessState.cpp; then
+            bbnote "AppArmor txn_security_ctx fix already applied to ProcessState.cpp"
+        else
+            cd ${S}/android/native
+            patch -p1 --forward < ${WORKDIR}/0001-fix-apparmor-txn-security-ctx.patch
+            cd ${S}
+        fi
+    else
+        bbfatal "android/native/libs/binder/ProcessState.cpp not found after cmake configure; clone-android-binder-repo.sh may have failed or its layout changed"
+    fi
+}
 
 do_install:append() {
     install -d ${D}${systemd_unitdir}/system
