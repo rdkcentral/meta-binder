@@ -39,10 +39,11 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
 SRC_URI += "file://servicemanager.service"
 
+
 # Pin to a released tag. A branch name or a feature-branch SHA makes the build
 # unreproducible and is not a supported configuration.
-PV ?= "2.6.0"
-SRCREV ?= "2.6.0"
+PV ?= "2.7.0"
+SRCREV ?= "2.7.0"
 S = "${WORKDIR}/git"
 
 # libbinder provides liblog; do not also build liblog.bb.
@@ -81,10 +82,15 @@ EXTRA_OECMAKE += " \
     -DBINDER_PROTOCOL=8 \
 "
 
+do_configure[network] = "1"
+
+
 do_install:append() {
     install -d ${D}${systemd_unitdir}/system
     install -m 0644 ${WORKDIR}/servicemanager.service ${D}${systemd_unitdir}/system
 }
+
+
 
 SYSTEMD_SERVICE:${PN} = "servicemanager.service"
 SYSTEMD_AUTO_ENABLE = "enable"
