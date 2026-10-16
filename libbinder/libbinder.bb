@@ -36,25 +36,25 @@ PV ?= "2.7.0"
 SRCREV ?= "2.7.0"
 S = "${WORKDIR}/git"
 
-# libbinder provides liblog; do not also build liblog.bb.
+# Do not use libblog.bb if using libbinder.bb because libbinder provides support for liblog.bb
 RPROVIDES:${PN}:append = " liblog"
 PROVIDES:append = " liblog"
 
-inherit cmake systemd siteinfo
+# Network access from tasks is disabled by default on kernels which support this feature
+do_configure[network] = "1"
 
+inherit cmake systemd 
 
 do_install:append() {
     install -d ${D}${systemd_unitdir}/system
     install -m 0644 ${WORKDIR}/servicemanager.service ${D}${systemd_unitdir}/system
 }
 
-SYSTEMD_SERVICE:${PN} = "servicemanager.service"
-SYSTEMD_AUTO_ENABLE = "enable"
-
-# Binder libraries are intentionally unversioned (e.g. libbinder.so).
-# OE normally assigns lib*.so to ${PN}-dev, expecting them to be symlinks.
-# Since these are the actual runtime libraries, packaging them in -dev causes
-# the dev-elf QA check to fail. Therefore the .so files remain in ${PN} and
-# are removed from the default ${PN}-dev file patterns.
-FILES:${PN} += "${libdir}/lib*.so*"
-FILES:${PN}-dev = "${includedir}/*"
+SYSTEMD_SERVICE:${PN} += "servicemanager.service"
+FILES:${PN} += "${systemd_unitdir}/system/servicemanager.service \
+                ${libdir}/* \
+                ${bindir}/* \
+               "
+INSANE_SKIP:${PN}-dev += "dev-elf"
+INSANE_SKIP:${PN} += "dev-deps"
+FILES_SOLIBSDEV = ""
