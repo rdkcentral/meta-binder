@@ -9,9 +9,8 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
 SRC_URI += "file://servicemanager.service"
 
-PV ?= "1.0.0"
-PR ?= "r0"
-SRCREV ?= "1.0.0"
+SRCREV = "${PV}"
+S = "${WORKDIR}/git"
 
 # Do not use libblog.bb if using libbinder.bb because libbinder provides support for liblog.bb
 RPROVIDES:${PN}:append = " liblog"
