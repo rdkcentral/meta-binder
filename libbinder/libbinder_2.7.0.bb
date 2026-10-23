@@ -1,4 +1,3 @@
-
 SUMMARY = "Linux Binder IPC runtime (libbinder, libutils, servicemanager)"
 LICENSE = "Apache-2.0"
 # A non-CLOSED licence needs a checksum, or do_populate_lic fails before the
@@ -15,8 +14,7 @@ SRC_URI += "file://servicemanager.service"
 
 # Pin to a released tag. A branch name or a feature-branch SHA makes the build
 # unreproducible and is not a supported configuration.
-PV ?= "2.7.0"
-SRCREV ?= "2.7.0"
+SRCREV = "${PV}"
 S = "${WORKDIR}/git"
 
 # Do not use libblog.bb if using libbinder.bb because libbinder provides support for liblog.bb
