@@ -12,9 +12,9 @@ SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_UR
 SRC_URI += "file://servicemanager.service"
 
 
-# Pin to a released tag. A branch name or a feature-branch SHA makes the build
-# unreproducible and is not a supported configuration.
-SRCREV = "${PV}"
+PV ?= "2.7.0"
+PR ?= "r0"
+SRCREV ?= "2.7.0"
 S = "${WORKDIR}/git"
 
 # Do not use libblog.bb if using libbinder.bb because libbinder provides support for liblog.bb
