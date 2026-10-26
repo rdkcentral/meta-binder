@@ -1,42 +1,34 @@
-DESCRIPTION = "RDK Binder module"
-SECTION = "BinderModule"
-
+SUMMARY = "Linux Binder IPC runtime (libbinder, libutils, servicemanager)"
 LICENSE = "Apache-2.0"
+# A non-CLOSED licence needs a checksum, or do_populate_lic fails before the
+# build starts. Points at the LICENSE file in the fetched source.
 LIC_FILES_CHKSUM = "file://LICENSE;md5=175792518e4ac015ab6696d16c4f607e"
 
+# files/ sits beside this recipe and holds the systemd unit. Without this a
+# layer that copies only the .bb fails during fetch, before anything builds.
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
 SRC_URI += "file://servicemanager.service"
 
-PV ?= "1.0.0"
-PR ?= "r0"
-SRCREV ?= "1.0.0"
+
+# Pin to a released tag. A branch name or a feature-branch SHA makes the build
+# unreproducible and is not a supported configuration.
+SRCREV = "${PV}"
+S = "${WORKDIR}/git"
 
 # Do not use libblog.bb if using libbinder.bb because libbinder provides support for liblog.bb
 RPROVIDES:${PN}:append = " liblog"
 PROVIDES:append = " liblog"
 
-S = "${WORKDIR}/git"
-
 # Network access from tasks is disabled by default on kernels which support this feature
 do_configure[network] = "1"
 
-inherit cmake systemd
-
-do_configure:prepend() {
-    cd ${S}
-    # Source setup-env.sh to initialise the environment variables.
-    . ./setup-env.sh
-    # Clone the AOSP code and apply the patches.
-    clone_android_binder_repo
-    cd ${B}
-}
+inherit cmake systemd 
 
 do_install:append() {
-    # Install the systemd servicemanager service.
-    install -d ${D}/${systemd_unitdir}/system
-    install -m 0644 ${WORKDIR}/servicemanager.service ${D}/${systemd_unitdir}/system
+    install -d ${D}${systemd_unitdir}/system
+    install -m 0644 ${WORKDIR}/servicemanager.service ${D}${systemd_unitdir}/system
 }
 
 SYSTEMD_SERVICE:${PN} += "servicemanager.service"
