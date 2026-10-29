@@ -1,4 +1,4 @@
-DESCRIPTION = "RDK AIDL Generator Host Tool"
+DESCRIPTION = "RDK AIDL Compiler/Generator Host Tool"
 SECTION = "BinderModule"
 
 LICENSE = "Apache-2.0"
@@ -6,26 +6,28 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=175792518e4ac015ab6696d16c4f607e"
 
 SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
 
-PV ?= "1.0.0"
-PR ?= "r0"
-SRCREV ?= "1.0.0"
+PR = "r1"
+# Minimum version of linux_binder_idl required/supported by this recipe 
+PV = "2.7.0"
+SRCREV = "2.7.0"
+
+DEPENDS += "m4-native"
+export M4 = "${STAGING_BINDIR_NATIVE}/m4"
 
 S = "${WORKDIR}/git"
-OECMAKE_SOURCEPATH = "${WORKDIR}/git/aidl-generator"
+OECMAKE_SOURCEPATH = "${S}"
+OECMAKE_TARGET_COMPILE = "aidl aidl-cpp"
+EXTRA_OECMAKE += "-DBUILD_HOST_AIDL=ON -DBUILD_STATIC_LIB=ON"
 
 inherit cmake native
 
-do_configure:prepend() {
-    cd ${S}/
-    # Source setup-env.sh to initialise the environment variables.
-    . ./setup-env.sh
-    # Clone the AOSP code and apply the patches.
-    clone_android_binder_repo
-    cd ${B}
+# Enable network access during configure step
+# To download binder and aidl sources
+do_configure[network] = "1"
+
+do_install() {
+    install -d ${D}${bindir}
+    install -m 0755 ${B}/aidl ${D}${bindir}/aidl
+    install -m 0755 ${B}/aidl-cpp ${D}${bindir}/aidl-cpp
 }
 
-FILES:${PN} += "${bindir}/*"
-
-INSANE_SKIP:${PN}-dev += "dev-elf"
-INSANE_SKIP:${PN} += "dev-deps"
-FILES_SOLIBSDEV = ""

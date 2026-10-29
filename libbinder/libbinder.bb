@@ -12,10 +12,10 @@ SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_UR
 SRC_URI += "file://servicemanager.service"
 
 
-PV ?= "2.7.0"
-PR ?= "r0"
-SRCREV ?= "2.7.0"
-S = "${WORKDIR}/git"
+PR = "r1"
+# Minimum version of linux_binder_idl required/supported by this recipe 
+PV = "2.7.0"
+SRCREV = "2.7.0"
 
 # Do not use libblog.bb if using libbinder.bb because libbinder provides support for liblog.bb
 RPROVIDES:${PN}:append = " liblog"
