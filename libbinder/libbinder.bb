@@ -8,14 +8,17 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=175792518e4ac015ab6696d16c4f607e"
 # layer that copies only the .bb fails during fetch, before anything builds.
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
-SRC_URI += "file://servicemanager.service"
-
-
 PR = "r1"
 # Minimum version of linux_binder_idl required/supported by this recipe 
 PV = "2.7.0"
-SRCREV = "2.7.0"
+
+SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
+SRC_URI += "file://servicemanager.service"
+
+SRCREV = "${PV}"
+S = "${WORKDIR}/git"
+
+inherit cmake systemd 
 
 # Do not use libblog.bb if using libbinder.bb because libbinder provides support for liblog.bb
 RPROVIDES:${PN}:append = " liblog"
@@ -23,8 +26,6 @@ PROVIDES:append = " liblog"
 
 # Network access from tasks is disabled by default on kernels which support this feature
 do_configure[network] = "1"
-
-inherit cmake systemd 
 
 do_install:append() {
     install -d ${D}${systemd_unitdir}/system

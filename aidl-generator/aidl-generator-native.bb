@@ -4,22 +4,23 @@ SECTION = "BinderModule"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=175792518e4ac015ab6696d16c4f607e"
 
-SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
-
 PR = "r1"
 # Minimum version of linux_binder_idl required/supported by this recipe 
 PV = "2.7.0"
-SRCREV = "2.7.0"
+
+SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
+
+SRCREV = "${PV}"
+S = "${WORKDIR}/git"
+
+inherit cmake native
 
 DEPENDS += "m4-native"
 export M4 = "${STAGING_BINDIR_NATIVE}/m4"
 
-S = "${WORKDIR}/git"
 OECMAKE_SOURCEPATH = "${S}"
 OECMAKE_TARGET_COMPILE = "aidl aidl-cpp"
 EXTRA_OECMAKE += "-DBUILD_HOST_AIDL=ON -DBUILD_STATIC_LIB=ON"
-
-inherit cmake native
 
 # Enable network access during configure step
 # To download binder and aidl sources

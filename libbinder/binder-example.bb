@@ -4,21 +4,22 @@ SECTION = "BinderModule"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=175792518e4ac015ab6696d16c4f607e"
 
+PR = "r1"
+# Minimum version of linux_binder_idl required/supported by this recipe 
+PV = "2.7.0"
+
 SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
 
-PR = "r1"
-# Minimum version of linux_binder_idl required/supported by this recipe
-PV = "2.7.0"
-SRCREV = "2.7.0"
+SRCREV = "${PV}"
+S = "${WORKDIR}/git"
+
+inherit cmake
 
 DEPENDS = "libbinder aidl-generator-native"
 RDEPENDS:${PN} = "libbinder"
 
-S = "${WORKDIR}/git"
 OECMAKE_SOURCEPATH = "${WORKDIR}/git/example"
 EXTRA_OECMAKE += "-DCMAKE_INSTALL_INCDIR:PATH=${STAGING_INCDIR}"
-
-inherit cmake
 
 do_configure:prepend() {
     aidl_dir="${S}/example/FWManager/aidl"
