@@ -1,0 +1,12 @@
+[Unit]
+Description=Run custom services and setup binder
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/setup-binder.sh
+StandardOutput=journal
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target
