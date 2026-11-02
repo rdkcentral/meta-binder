@@ -26,6 +26,15 @@ do_configure[network] = "1"
 
 inherit cmake systemd 
 
+do_configure:prepend() {
+    cd ${S}
+    # Source setup-env.sh to initialise the environment variables.
+    . ./setup-env.sh
+    # Clone the AOSP code and apply the patches.
+    clone_android_binder_repo
+    cd ${B}
+}
+
 do_install:append() {
     install -d ${D}${systemd_unitdir}/system
     install -m 0644 ${WORKDIR}/servicemanager.service ${D}${systemd_unitdir}/system
