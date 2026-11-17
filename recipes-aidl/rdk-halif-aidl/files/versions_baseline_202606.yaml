@@ -1,16 +1,5 @@
-# versions_released.yaml - released-cohort build manifest.
-#
-# Pins every component to its latest released snapshot. Used by VTS
-# release builds and any consumer that wants a reproducible, cohort-
-# locked SDK build. Devs working on the in-development tree use the
-# `versions_current.yaml` companion manifest:
-#
-#     ./build_modules.sh manifest                                   # this file (default)
-#     ./build_modules.sh manifest --file versions_current.yaml      # dev cohort
-#
-# A component absent from the `components:` map falls back to `default:`.
-# `default: current` ensures any newly-added component (no released
-# snapshot yet) still builds against its current sibling.
+# This file supports multiple components and versions within the baseline snapshot.
+# Current version contains tag 0.22.0 with broadcast and ringbuffer from tag 0.23.0
 
 default: current
 

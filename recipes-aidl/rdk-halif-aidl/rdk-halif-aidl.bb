@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-# tag 0.22.0 with broadcast and ringbuffer from tag 0.23.0
+
 BASELINE_RELEASE_DATE = "202606" 
 
 SRC_URI = "git://github.com/rdkcentral/rdk-halif-aidl.git;protocol=https;nobranch=1"
@@ -91,6 +91,7 @@ python populate_packages:prepend() {
         pkgs.append(name)
         d.setVar('SUMMARY:' + name, f'RDK HAL AIDL interface library: {component}')
         d.setVar('FILES:' + name, os.path.join(d.getVar('libdir'), library))
+        d.setVar('ALLOW_EMPTY:' + name, bb.utils.contains('DISTRO_FEATURES', 'AIDL_HAL_LIBS_STATIC', '1', '', d))
     # Exact runtime libraries must be claimed before the default -dev .so glob.
     d.setVar('PACKAGES', ' '.join(pkgs + d.getVar('PACKAGES').split()))
 }
@@ -98,3 +99,6 @@ python populate_packages:prepend() {
 SYSROOT_DIRS += " ${prefix}/src"
 FILES:${PN}-dev += "${prefix}/src"
 FILES:${PN}-staticdev += "${libdir}/lib*.a"
+#Base package explicitly empty
+FILES:${PN} = ""
+ALLOW_EMPTY:${PN} = "1"
