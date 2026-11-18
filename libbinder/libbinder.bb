@@ -14,6 +14,7 @@ PV = "2.7.0"
 
 SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
 SRC_URI += "file://servicemanager.service"
+SRC_URI += "file://0001-libbase-patchset-hex-include-stdint.patch"
 
 SRCREV = "${PV}"
 SERVICEMANAGER_SERVICE_FILE = "${@d.getVar('UNPACKDIR') or d.getVar('WORKDIR')}/servicemanager.service"
