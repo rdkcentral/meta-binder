@@ -17,6 +17,7 @@ SRC_URI += "file://servicemanager.service"
 
 SRCREV = "${PV}"
 S = "${WORKDIR}/git"
+UNPACKDIR ??= "${WORKDIR}"
 
 inherit cmake systemd 
 
@@ -29,7 +30,7 @@ do_configure[network] = "1"
 
 do_install:append() {
     install -d ${D}${systemd_unitdir}/system
-    install -m 0644 ${WORKDIR}/servicemanager.service ${D}${systemd_unitdir}/system
+    install -m 0644 ${UNPACKDIR}/servicemanager.service ${D}${systemd_unitdir}/system
 }
 
 SYSTEMD_SERVICE:${PN} += "servicemanager.service"
