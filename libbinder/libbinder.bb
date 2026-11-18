@@ -16,7 +16,6 @@ SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_UR
 SRC_URI += "file://servicemanager.service"
 
 SRCREV = "${PV}"
-S = "${WORKDIR}/git"
 SERVICEMANAGER_SERVICE_FILE = "${@d.getVar('UNPACKDIR') or d.getVar('WORKDIR')}/servicemanager.service"
 
 inherit cmake systemd 
