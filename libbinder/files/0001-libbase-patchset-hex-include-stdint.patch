@@ -1,0 +1,21 @@
+Subject: libbase: include stdint.h for uint8_t
+Upstream-Status: Pending
+
+This fix has not yet been submitted to linux_binder_idl.
+
+diff --git a/patches/libbase.patch b/patches/libbase.patch
+--- a/patches/libbase.patch
++++ b/patches/libbase.patch
+@@ -1,5 +1,12 @@
++diff --git a/hex.cpp b/hex.cpp
++--- a/hex.cpp
+++++ b/hex.cpp
++@@ -17,1 +17,3 @@
+++#include <stdint.h>
+++
++ #include "android-base/hex.h"
+ #####################################################################
+ Date: Thu Nov 2 15:45:32 2023 +0100
+ From: 8436e04cfaa6c21be86b37e9599184d77c67faef Wed May 25 18:41:55 2022
+ Source: Comcast
+ Subject: Fix the compilation issues in the Linux environment

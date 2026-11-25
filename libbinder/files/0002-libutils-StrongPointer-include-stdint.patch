@@ -1,0 +1,22 @@
+Subject: libutils: include stdint for uintptr_t
+Upstream-Status: Pending
+
+This fix has not yet been submitted to linux_binder_idl.
+
+diff --git a/patches/core.patch b/patches/core.patch
+--- a/patches/core.patch
++++ b/patches/core.patch
+@@ -1,5 +1,13 @@
++diff --git a/libutils/include/utils/StrongPointer.h b/libutils/include/utils/StrongPointer.h
++--- a/libutils/include/utils/StrongPointer.h
+++++ b/libutils/include/utils/StrongPointer.h
++@@ -20,2 +20,4 @@
+++#include <stdint.h>
+++
++ #include <functional>
++ #include <type_traits>  // for common_type.
+ #####################################################################
+ Date: Thu Nov 2 16:17:28 2023 +0100
+ From: 8301b33dad51cafd9d08876fc91a7e5fa556dcd3 Fri Mar 24 15:59:07 2023
+ Source: Comcast & Android OpenSource Project
+ Subject: Fix the compilation issues in the Linux environment

@@ -14,9 +14,11 @@ PV = "2.7.0"
 
 SRC_URI = "${RDKCENTRAL_GITHUB_ROOT}/linux_binder_idl;${RDKCENTRAL_GITHUB_SRC_URI_SUFFIX}"
 SRC_URI += "file://servicemanager.service"
+SRC_URI += "file://0001-libbase-patchset-hex-include-stdint.patch"
+SRC_URI += "file://0002-libutils-StrongPointer-include-stdint.patch"
 
 SRCREV = "${PV}"
-S = "${WORKDIR}/git"
+SERVICEMANAGER_SERVICE_FILE = "${@d.getVar('UNPACKDIR') or d.getVar('WORKDIR')}/servicemanager.service"
 
 inherit cmake systemd 
 
@@ -29,7 +31,7 @@ do_configure[network] = "1"
 
 do_install:append() {
     install -d ${D}${systemd_unitdir}/system
-    install -m 0644 ${WORKDIR}/servicemanager.service ${D}${systemd_unitdir}/system
+    install -m 0644 ${SERVICEMANAGER_SERVICE_FILE} ${D}${systemd_unitdir}/system
 }
 
 SYSTEMD_SERVICE:${PN} += "servicemanager.service"
